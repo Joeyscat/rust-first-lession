@@ -1,7 +1,7 @@
 use std::{collections::HashMap, str::FromStr};
 
 use anyhow::{anyhow, Result};
-use clap::{AppSettings, Clap};
+use clap::{AppSettings, Parser};
 use colored::Colorize;
 use mime::Mime;
 use reqwest::{header, Client, Response, Url};
@@ -15,7 +15,7 @@ use reqwest::{header, Client, Response, Url};
 // 下面 /// 的注释是文档，clap会将其作为CLI的帮助文档
 
 /// A native httpie implementation with Rust, can you imagine how easy it is?
-#[derive(Clap, Debug)]
+#[derive(Parser, Debug)]
 #[clap(version = "1.0", author = "jojo <zhouyu.fun@qq.com>")]
 #[clap(setting=AppSettings::ColoredHelp)]
 struct Opts {
@@ -24,7 +24,7 @@ struct Opts {
 }
 
 // 子命令分别对应不同的 HTTP 方法，目前只支持 get/post
-#[derive(Clap, Debug)]
+#[derive(clap::Subcommand, Debug)]
 enum SubCommand {
     Get(Get),
     Post(Post),
@@ -34,7 +34,7 @@ enum SubCommand {
 // get 子命令
 
 /// feed get with an url and we will retrieve the response for you
-#[derive(Clap, Debug)]
+#[derive(Parser, Debug)]
 struct Get {
     /// HTTP 请求的 URL
     #[clap(parse(try_from_str = parse_url))]
@@ -45,7 +45,7 @@ struct Get {
 
 /// feed post with an url and optional key=value pairs. we will post the data
 /// as JSON, and retrieve the response for you.
-#[derive(Clap, Debug)]
+#[derive(Parser, Debug)]
 struct Post {
     /// HTTP 请求的 URL
     #[clap(parse(try_from_str = parse_url))]
